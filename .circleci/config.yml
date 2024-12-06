@@ -2,6 +2,13 @@ version: 2.1
 
 jobs:
   deploy:
+    parameters:
+      environment_name:
+        type: string
+      component_name:
+        type: string
+      target_version:
+        type: string
     docker:
       - image: cimg/base:current
     steps:
@@ -29,6 +36,6 @@ workflows:
   staging-B:
     jobs:
       - deploy:
-          environment_name: "stating"
+          environment_name: "staging"
           component_name: "B"
           target_version: $CIRCLE_BUILD_NUM
