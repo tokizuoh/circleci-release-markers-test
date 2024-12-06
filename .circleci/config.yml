@@ -1,17 +1,34 @@
 version: 2.1
 
 jobs:
-  say-hello:
+  deploy:
     docker:
       - image: cimg/base:current
-
     steps:
-      - checkout
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+          name: ""
+          command: |
+            circleci run release log \
+              --environment-name=<< parameters.environment_name >> \
+              --component-name=<< parameters.component_name >> \
+              --target-version=<< parameters.target_version >>
 
 workflows:
-  say-hello-workflow:
+  release-A:
     jobs:
-      - say-hello
+      - deploy:
+          environment_name: "production"
+          component_name: "A"
+          target_version: $CIRCLE_BUILD_NUM
+  release-B:
+    jobs:
+      - deploy:
+          environment_name: "production"
+          component_name: "B"
+          target_version: $CIRCLE_BUILD_NUM
+  staging-B:
+    jobs:
+      - deploy:
+          environment_name: "stating"
+          component_name: "B"
+          target_version: $CIRCLE_BUILD_NUM
